@@ -146,8 +146,10 @@ public class TestLeafNode {
                 // present
                 key = new IntDataBox(j);
                 rid = new RecordId(j, (short) j);
+                System.out.println(key + " " + rid);
                 assertEquals(Optional.of(rid), leaf.getKey(key));
             }
+
         }
     }
 

@@ -9,6 +9,7 @@ import edu.berkeley.cs186.database.memory.BufferManager;
 import edu.berkeley.cs186.database.memory.Page;
 import edu.berkeley.cs186.database.table.RecordId;
 
+import javax.xml.crypto.Data;
 import java.nio.ByteBuffer;
 import java.util.*;
 
@@ -82,7 +83,35 @@ class InnerNode extends BPlusNode {
     public LeafNode get(DataBox key) {
         // TODO(proj2): implement
 
-        return null;
+        List<DataBox> keys = getKeys();
+        int index = search(keys, key);
+        Long pageNum = children.get(index);
+
+        BPlusNode potentialNode = BPlusNode.fromBytes(metadata, bufferManager, treeContext, pageNum);
+        if (potentialNode instanceof LeafNode) {
+            return (LeafNode) potentialNode;
+        }
+        return potentialNode.get(key);
+    }
+
+
+    private int search(List<DataBox> list, DataBox key) {
+        int index = -1;
+        for (int i = 0; i < keys.size() - 1; i++) {
+            DataBox curMinKey = keys.get(i);
+            DataBox nextMinKey = keys.get(i + 1);
+            if (key.compareTo(curMinKey) < 0) {
+                index = i;
+                break;
+            } else if (key.compareTo(curMinKey) >= 0 && key.compareTo(nextMinKey) < 0) {
+                index = i + 1;
+                break;
+            }
+        }
+        if (index == -1) {
+            index = keys.size();
+        }
+        return index;
     }
 
     // See BPlusNode.getLeftmostLeaf.
@@ -90,14 +119,20 @@ class InnerNode extends BPlusNode {
     public LeafNode getLeftmostLeaf() {
         assert(children.size() > 0);
         // TODO(proj2): implement
+        Long pageNum = children.get(0);
 
-        return null;
+        BPlusNode potentialNode = BPlusNode.fromBytes(metadata, bufferManager, treeContext, pageNum);
+        if (potentialNode instanceof LeafNode) {
+            return (LeafNode) potentialNode;
+        }
+        return potentialNode.getLeftmostLeaf();
     }
 
     // See BPlusNode.put.
     @Override
     public Optional<Pair<DataBox, Long>> put(DataBox key, RecordId rid) {
         // TODO(proj2): implement
+
 
         return Optional.empty();
     }

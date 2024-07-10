@@ -26,6 +26,7 @@ import edu.berkeley.cs186.database.recovery.ARIESRecoveryManager;
 import edu.berkeley.cs186.database.recovery.DummyRecoveryManager;
 import edu.berkeley.cs186.database.recovery.RecoveryManager;
 import edu.berkeley.cs186.database.table.*;
+import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.stats.TableStats;
 
 import java.io.*;
@@ -829,6 +830,7 @@ public class Database implements AutoCloseable {
             }
         }
 
+        @Override
         public void updateRecordWhere(String tableName, String targetColumnName, Function<Record, DataBox> targetValue, Function<Record, DataBox> condition) {
             Table tab = getTable(tableName);
             tableName = tab.getName();
